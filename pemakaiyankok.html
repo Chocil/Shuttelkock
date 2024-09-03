@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pemakaian Kok</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .table-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Pemakaian Kok</h1>
+
+        <!-- Form Pencarian -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form id="searchForm" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="searchNama" class="form-label">Nama Pemain</label>
+                        <input type="text" id="searchNama" class="form-control" placeholder="Masukkan nama pemain">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="searchTanggal" class="form-label">Tanggal</label>
+                        <input type="date" id="searchTanggal" class="form-control">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Cari</button>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" id="clearSearch" class="btn btn-secondary w-100">Bersihkan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabel Data -->
+        <div class="table-responsive table-container">
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Nama Pemain</th>
+                        <th>Jumlah Kok</th>
+                        <th>Total Biaya (Rp)</th>
+                    </tr>
+                </thead>
+                <tbody id="data-table-body">
+                    <!-- Data akan dimuat di sini -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginasi -->
+        <div class="pagination-container">
+            <nav aria-label="Page navigation">
+                <ul class="pagination" id="pagination"></ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS dan dependensi -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script JavaScript -->
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyyQfqQ51WXKKdpjHLQcuI7SKnYquzVfDWGkZ970XOpiZ34CsX_0tREZXUqdAjsjICt/exec?sheetName=Penggunaan%20Kok';
+        let allData = []; // Menyimpan semua data yang diambil dari Google Sheets
+        const itemsPerPage = 20; // Jumlah item per halaman
+        let currentPage = 1; // Halaman saat ini
+
+        // Fungsi untuk mengambil data dari Google Sheets
+        async function fetchUsageData() {
+            try {
+                const response = await fetch(scriptURL);
+                const data = await response.json();
+                allData = data.slice(1); // Menghilangkan header row
+                renderTable(allData);
+                setupPagination(allData);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // Fungsi untuk mengubah format tanggal dari ISO ke "dd-mm-yyyy"
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // bulan dimulai dari 0
+            const year = date.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+
+        // Fungsi untuk mengubah format tanggal dari "dd-mm-yyyy" ke ISO "yyyy-mm-dd"
+        function formatToISODate(date) {
+            const [day, month, year] = date.split('-');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Fungsi untuk mengurutkan data berdasarkan tanggal
+        function sortByDate(data) {
+            return data.sort((a, b) => {
+                const dateA = new Date(a[0]);
+                const dateB = new Date(b[0]);
+                return dateA - dateB;
+            });
+        }
+
+        // Fungsi untuk menampilkan data ke dalam tabel
+        function renderTable(data) {
+            const tableBody = document.getElementById('data-table-body');
+            tableBody.innerHTML = ''; // Bersihkan tabel sebelum menampilkan data baru
+
+            // Menghitung jumlah halaman
+            const totalPages = Math.ceil(data.length / itemsPerPage);
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const paginatedData = data.slice(start, end);
+
+            if (paginatedData.length === 0) {
+                const noDataRow = document.createElement('tr');
+                const noDataCell = document.createElement('td');
+                noDataCell.colSpan = 4;
+                noDataCell.classList.add('text-center');
+                noDataCell.textContent = 'Tidak ada data yang sesuai.';
+                noDataRow.appendChild(noDataCell);
+                tableBody.appendChild(noDataRow);
+                return;
+            }
+
+            // Urutkan data berdasarkan tanggal
+            const sortedData = sortByDate(paginatedData);
+
+            sortedData.forEach(row => {
+                const tr = document.createElement('tr');
+                row.forEach((cell, index) => {
+                    const td = document.createElement('td');
+                    // Ubah format tanggal jika ini adalah kolom tanggal (index 0)
+                    td.textContent = index === 0 ? formatDate(cell) : cell;
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // Fungsi untuk menyiapkan tombol paginasi
+        function setupPagination(data) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = ''; // Bersihkan kontrol paginasi sebelum menampilkan yang baru
+
+            // Menghitung jumlah halaman
+            const totalPages = Math.ceil(data.length / itemsPerPage);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const li = document.createElement('li');
+                li.classList.add('page-item');
+                if (i === currentPage) {
+                    li.classList.add('active');
+                }
+                const a = document.createElement('a');
+                a.classList.add('page-link');
+                a.href = '#';
+                a.textContent = i;
+                a.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    currentPage = i;
+                    renderTable(data);
+                    setupPagination(data);
+                });
+                li.appendChild(a);
+                pagination.appendChild(li);
+            }
+        }
+
+        // Fungsi untuk memfilter data berdasarkan input pencarian
+        function filterData(event) {
+            event.preventDefault(); // Mencegah reload halaman saat submit form
+
+            const namaInput = document.getElementById('searchNama').value.toLowerCase();
+            const tanggalInput = document.getElementById('searchTanggal').value;
+
+            const filteredData = allData.filter(row => {
+                const [tanggal, nama, jumlahKok, totalBiaya] = row;
+                const formattedTanggal = formatDate(tanggal);
+                const isNamaMatch = nama.toLowerCase().includes(namaInput) || namaInput === '';
+                const isTanggalMatch = formatToISODate(formattedTanggal) === tanggalInput || tanggalInput === '';
+                return isNamaMatch && isTanggalMatch;
+            });
+
+            currentPage = 1; // Reset ke halaman pertama saat melakukan pencarian
+            renderTable(filteredData);
+            setupPagination(filteredData);
+        }
+
+        // Fungsi untuk membersihkan pencarian dan menampilkan semua data
+        function clearSearch() {
+            document.getElementById('searchNama').value = '';
+            document.getElementById('searchTanggal').value = '';
+            currentPage = 1; // Reset ke halaman pertama
+            renderTable(allData);
+            setupPagination(allData);
+        }
+
+        // Event Listener
+        document.getElementById('searchForm').addEventListener('submit', filterData);
+        document.getElementById('clearSearch').addEventListener('click', clearSearch);
+
+        // Memuat data saat halaman dibuka
+        window.addEventListener('load', fetchUsageData);
+    </script>
+</body>
+</html>
