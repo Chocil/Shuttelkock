@@ -31,8 +31,10 @@
             <div class="card-body">
                 <form id="searchForm" class="row g-3">
                     <div class="col-md-4">
-                        <label for="searchNama" class="form-label">Nama Pemain</label>
-                        <input type="text" id="searchNama" class="form-control" placeholder="Masukkan nama pemain">
+                        <label for="selectNama" class="form-label">Nama Pemain</label>
+                        <select id="selectNama" class="form-control">
+                            <option value="">Pilih Nama Pemain</option>
+                        </select>
                     </div>
                     <div class="col-md-4">
                         <label for="searchTanggal" class="form-label">Tanggal</label>
@@ -74,14 +76,16 @@
     </div>
 
     <div class="text-center py-4">
-            <a href="index.html" class="btn btn-secondary">Data</a>
-        </div>
+        <a href="index.html" class="btn btn-secondary">Data</a>
+    </div>
+
     <!-- Bootstrap JS dan dependensi -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Script JavaScript -->
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyyQfqQ51WXKKdpjHLQcuI7SKnYquzVfDWGkZ970XOpiZ34CsX_0tREZXUqdAjsjICt/exec?sheetName=Penggunaan%20Kok';
+        const scriptURLNamaPemain = 'https://script.google.com/macros/s/AKfycbyyQfqQ51WXKKdpjHLQcuI7SKnYquzVfDWGkZ970XOpiZ34CsX_0tREZXUqdAjsjICt/exec?sheetName=Nama%20Pemain';
         let allData = []; // Menyimpan semua data yang diambil dari Google Sheets
         const itemsPerPage = 20; // Jumlah item per halaman
         let currentPage = 1; // Halaman saat ini
@@ -96,6 +100,28 @@
                 setupPagination(allData);
             } catch (error) {
                 console.error('Error fetching data:', error);
+            }
+        }
+
+        // Fungsi untuk mengambil nama pemain dari Google Sheets dan memuatnya ke dalam dropdown
+        async function fetchNamaPemain() {
+            try {
+                const response = await fetch(scriptURLNamaPemain);
+                const namaPemain = await response.json();
+                const selectNama = document.getElementById('selectNama');
+
+                // Kosongkan dropdown sebelum memuat data baru
+                selectNama.innerHTML = '<option value="">Pilih Nama Pemain</option>';
+
+                // Tambahkan opsi ke dropdown
+                namaPemain.forEach(nama => {
+                    const option = document.createElement('option');
+                    option.value = nama;
+                    option.textContent = nama;
+                    selectNama.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error fetching nama pemain:', error);
             }
         }
 
@@ -193,7 +219,7 @@
         function filterData(event) {
             event.preventDefault(); // Mencegah reload halaman saat submit form
 
-            const namaInput = document.getElementById('searchNama').value.toLowerCase();
+            const namaInput = document.getElementById('selectNama').value.toLowerCase();
             const tanggalInput = document.getElementById('searchTanggal').value;
 
             const filteredData = allData.filter(row => {
@@ -209,21 +235,25 @@
             setupPagination(filteredData);
         }
 
-        // Fungsi untuk membersihkan pencarian dan menampilkan semua data
+        // Fungsi untuk membersihkan filter pencarian
         function clearSearch() {
-            document.getElementById('searchNama').value = '';
+            document.getElementById('selectNama').value = '';
             document.getElementById('searchTanggal').value = '';
-            currentPage = 1; // Reset ke halaman pertama
             renderTable(allData);
             setupPagination(allData);
         }
 
-        // Event Listener
+        // Event listener untuk form pencarian
         document.getElementById('searchForm').addEventListener('submit', filterData);
+
+        // Event listener untuk tombol bersihkan pencarian
         document.getElementById('clearSearch').addEventListener('click', clearSearch);
 
-        // Memuat data saat halaman dibuka
-        window.addEventListener('load', fetchUsageData);
+        // Panggil fungsi untuk mengambil data saat halaman dimuat
+        window.addEventListener('load', () => {
+            fetchUsageData();
+            fetchNamaPemain();
+        });
     </script>
 </body>
 </html>
