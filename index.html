@@ -7,6 +7,7 @@
     <title>Pencatat Kok</title>
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyyQfqQ51WXKKdpjHLQcuI7SKnYquzVfDWGkZ970XOpiZ34CsX_0tREZXUqdAjsjICt/exec';
+        let existingNames = []; // Array to store existing player names
 
         function hitungBiaya() {
             const hargaKok = 3000; // Harga per kok
@@ -20,7 +21,10 @@
                 .then(response => response.json())
                 .then(data => {
                     const selectElement = document.getElementById('nama');
+                    existingNames = []; // Clear existing names array
                     data.forEach(name => {
+                        const lowerCaseName = name.toLowerCase();
+                        existingNames.push(lowerCaseName);
                         const option = document.createElement('option');
                         option.value = name;
                         option.text = name;
@@ -32,10 +36,52 @@
                 });
         }
 
+        function handlePlayerFormSubmit(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const playerName = document.getElementById('playerName').value.trim().toLowerCase();
+            if (existingNames.includes(playerName)) {
+                alert('Nama pemain sudah ada!');
+                return;
+            }
+
+            const form = event.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            submitButton.disabled = true; // Disable the submit button
+
+            const formData = new FormData(form);
+            const actionURL = `${scriptURL}?SheetName=Nama%20Pemain`;
+
+            fetch(actionURL, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.result === 'success') {
+                    alert('Nama pemain berhasil ditambahkan!');
+                    form.reset(); // Reset form fields
+                    populatePlayerNames(); // Refresh the player names list
+                } else {
+                    alert('Terjadi kesalahan: ' + result.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan. Nama pemain gagal ditambahkan.');
+            })
+            .finally(() => {
+                submitButton.disabled = false; // Re-enable the submit button
+            });
+        }
+
         function handleFormSubmit(event) {
             event.preventDefault(); // Prevent default form submission
 
             const form = event.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            submitButton.disabled = true; // Disable the submit button
+
             const formData = new FormData(form);
             const sheetName = formData.get('SheetName');
             const actionURL = `${scriptURL}?SheetName=${sheetName}`;
@@ -49,7 +95,6 @@
                 if (result.result === 'success') {
                     alert('Data berhasil dikirim!');
                     form.reset(); // Reset form fields
-                    // Optionally redirect or update page content here
                 } else {
                     alert('Terjadi kesalahan: ' + result.error);
                 }
@@ -57,6 +102,9 @@
             .catch(error => {
                 console.error('Error:', error);
                 alert('Terjadi kesalahan. Data gagal dikirim.');
+            })
+            .finally(() => {
+                submitButton.disabled = false; // Re-enable the submit button
             });
         }
 
@@ -64,10 +112,11 @@
     </script>
 </head>
 <body>
+    
     <div class="container">
 
         <h1 class="text-center py-4">Tambah Nama Pemain</h1>
-        <form id="playerForm" method="POST" action="https://script.google.com/macros/s/AKfycbyyQfqQ51WXKKdpjHLQcuI7SKnYquzVfDWGkZ970XOpiZ34CsX_0tREZXUqdAjsjICt/exec" onsubmit="handleFormSubmit(event)">
+        <form id="playerForm" method="POST" action="https://script.google.com/macros/s/AKfycbyyQfqQ51WXKKdpjHLQcuI7SKnYquzVfDWGkZ970XOpiZ34CsX_0tREZXUqdAjsjICt/exec" onsubmit="handlePlayerFormSubmit(event)">
             <div class="mb-3">
                 <label for="playerName" class="form-label">Nama Pemain</label>
                 <input type="text" class="form-control" id="playerName" name="Nama" required>
@@ -99,10 +148,10 @@
             <input type="hidden" name="SheetName" value="Penggunaan Kok">
             <button type="submit" class="btn btn-primary">Kirim</button>
         </form>
-
         <div class="text-center py-4">
             <a href="pemakaiyankok.html" class="btn btn-secondary">Data</a>
         </div>
     </div>
+
 </body>
 </html>
