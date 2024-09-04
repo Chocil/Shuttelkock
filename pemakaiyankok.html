@@ -57,8 +57,8 @@
                     <tr>
                         <th>Tanggal</th>
                         <th>Nama</th>
-                        <th> Kok</th>
-                        <th> Harga </th>
+                        <th>Kok</th>
+                        <th>Rp</th>
                     </tr>
                 </thead>
                 <tbody id="data-table-body">
@@ -96,6 +96,10 @@
                 const response = await fetch(scriptURL);
                 const data = await response.json();
                 allData = data.slice(1); // Menghilangkan header row
+
+                // Urutkan seluruh data berdasarkan tanggal dari terbaru ke terlama
+                allData = sortByDate(allData);
+
                 renderTable(allData);
                 setupPagination(allData);
             } catch (error) {
@@ -140,12 +144,12 @@
             return `${year}-${month}-${day}`;
         }
 
-        // Fungsi untuk mengurutkan data berdasarkan tanggal
+        // Fungsi untuk mengurutkan data berdasarkan tanggal dari terbaru ke terlama
         function sortByDate(data) {
             return data.sort((a, b) => {
                 const dateA = new Date(a[0]);
                 const dateB = new Date(b[0]);
-                return dateA - dateB;
+                return dateB - dateA; // Urutan menurun (descending)
             });
         }
 
@@ -171,10 +175,7 @@
                 return;
             }
 
-            // Urutkan data berdasarkan tanggal
-            const sortedData = sortByDate(paginatedData);
-
-            sortedData.forEach(row => {
+            paginatedData.forEach(row => {
                 const tr = document.createElement('tr');
                 row.forEach((cell, index) => {
                     const td = document.createElement('td');
@@ -208,24 +209,25 @@
                     event.preventDefault();
                     currentPage = i;
                     renderTable(data);
-                    setupPagination(data);
+                    setupPagination(data); // Perbarui paginasi setelah mengganti halaman
                 });
                 li.appendChild(a);
                 pagination.appendChild(li);
             }
         }
 
-        // Fungsi untuk memfilter data berdasarkan input pencarian
+        // Fungsi untuk memfilter data berdasarkan form pencarian
         function filterData(event) {
-            event.preventDefault(); // Mencegah reload halaman saat submit form
+            event.preventDefault(); // Mencegah pengiriman form
 
             const namaInput = document.getElementById('selectNama').value.toLowerCase();
             const tanggalInput = document.getElementById('searchTanggal').value;
 
             const filteredData = allData.filter(row => {
-                const [tanggal, nama, jumlahKok, totalBiaya] = row;
+                const nama = row[1].toLowerCase();
+                const tanggal = row[0];
                 const formattedTanggal = formatDate(tanggal);
-                const isNamaMatch = nama.toLowerCase().includes(namaInput) || namaInput === '';
+                const isNamaMatch = nama.includes(namaInput) || namaInput === '';
                 const isTanggalMatch = formatToISODate(formattedTanggal) === tanggalInput || tanggalInput === '';
                 return isNamaMatch && isTanggalMatch;
             });
