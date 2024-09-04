@@ -28,35 +28,35 @@
             gap: 5px;
             align-items: center;
             margin-bottom: 10px;
-            overflow-x: auto; /* Tambahkan scroll horizontal jika diperlukan */
+            overflow-x: auto;
         }
         .search-form-container .form-control {
             flex-grow: 1;
-            min-width: 100px; /* Set minimum width untuk elemen input */
+            min-width: 100px;
             padding: 5px;
-            font-size: 12px; /* Kecilkan ukuran font untuk tampil lebih kompak */
+            font-size: 12px;
         }
         .search-form-container .btn {
-            padding: 5px 12px; /* Kecilkan padding untuk tombol */
-            font-size: 14px; /* Kecilkan ukuran font untuk tombol */
+            padding: 5px 12px;
+            font-size: 14px;
             flex-grow: 0;
             white-space: nowrap;
             display: flex;
             align-items: center;
-            justify-content: center; /* Pusatkan isi tombol */
+            justify-content: center;
         }
         .search-form-container .btn i {
-            margin-right: 5px; /* Jarak antara ikon dan teks */
+            margin-right: 5px;
         }
         @media (max-width: 576px) {
             .search-form-container .form-control,
             .search-form-container .btn {
-                flex: 1 1 auto; /* Biarkan elemen menyesuaikan ukuran */
-                max-width: 100%; /* Maksimalkan lebar elemen */
-                min-width: 0; /* Hapus batasan lebar minimum */
+                flex: 1 1 auto;
+                max-width: 100%;
+                min-width: 0;
             }
             .search-form-container {
-                gap: 2px; /* Kurangi gap untuk tampilan lebih rapat */
+                gap: 2px;
             }
         }
     </style>
@@ -93,6 +93,9 @@
                         <th>Nama</th>
                         <th>Kok</th>
                         <th>(Rp)</th>
+                        <th>Ket</th>
+                        <th>UniqueCode</th> <!-- Kolom UniqueCode Ditambahkan -->
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody id="data-table-body">
@@ -120,8 +123,9 @@
 
     <!-- Script JavaScript -->
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyyQfqQ51WXKKdpjHLQcuI7SKnYquzVfDWGkZ970XOpiZ34CsX_0tREZXUqdAjsjICt/exec?sheetName=Penggunaan%20Kok';
-        const scriptURLNamaPemain = 'https://script.google.com/macros/s/AKfycbyyQfqQ51WXKKdpjHLQcuI7SKnYquzVfDWGkZ970XOpiZ34CsX_0tREZXUqdAjsjICt/exec?sheetName=Nama%20Pemain';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbw9FxzatB84eV96t-Nodq-o45O4MBcU_eYHBQfqZsgcKg5X7YVZs_LyXZQTO_0xoRYz/exec?sheetName=Penggunaan%20Kok';
+        const scriptURLUpdate = 'https://script.google.com/macros/s/AKfycbw9FxzatB84eV96t-Nodq-o45O4MBcU_eYHBQfqZsgcKg5X7YVZs_LyXZQTO_0xoRYz/exec';
+        const scriptURLNamaPemain = 'https://script.google.com/macros/s/AKfycbw9FxzatB84eV96t-Nodq-o45O4MBcU_eYHBQfqZsgcKg5X7YVZs_LyXZQTO_0xoRYz/exec?sheetName=Nama%20Pemain';
         let allData = []; // Menyimpan semua data yang diambil dari Google Sheets
         const itemsPerPage = 20; // Jumlah item per halaman
         let currentPage = 1; // Halaman saat ini
@@ -151,7 +155,7 @@
                 const selectNama = document.getElementById('selectNama');
 
                 // Kosongkan dropdown sebelum memuat data baru
-                selectNama.innerHTML = '<option value=""> Nama Pemain </option>';
+                selectNama.innerHTML = '<option value="">Pilih Nama Pemain</option>';
 
                 // Tambahkan opsi ke dropdown
                 namaPemain.forEach(nama => {
@@ -203,9 +207,9 @@
             if (paginatedData.length === 0) {
                 const noDataRow = document.createElement('tr');
                 const noDataCell = document.createElement('td');
-                noDataCell.colSpan = 4;
+                noDataCell.colSpan = 7; // Memastikan sel menutupi semua kolom
                 noDataCell.classList.add('text-center');
-                noDataCell.textContent = 'Tidak ada data yang sesuai.';
+                noDataCell.textContent = 'Tidak ada data yang ditemukan.';
                 noDataRow.appendChild(noDataCell);
                 tableBody.appendChild(noDataRow);
                 return;
@@ -214,85 +218,153 @@
             paginatedData.forEach(row => {
                 const tr = document.createElement('tr');
                 row.forEach((cell, index) => {
-                    const td = document.createElement('td');
-                    // Ubah format tanggal jika ini adalah kolom tanggal (index 0)
-                    td.textContent = index === 0 ? formatDate(cell) : cell;
-                    tr.appendChild(td);
+                    if (index < 6) { // Menampilkan hingga UniqueCode
+                        const td = document.createElement('td');
+                        if (index === 0) {
+                            td.textContent = formatDate(cell); // Format tanggal
+                        } else if (index === 3) {
+                            td.textContent = `Rp ${parseInt(cell).toLocaleString()}`; // Format mata uang
+                        } else {
+                            td.textContent = cell;
+                        }
+                        tr.appendChild(td);
+                    }
                 });
+
+                // Tambahkan kolom action
+                const actionTd = document.createElement('td');
+                const bayarBtn = document.createElement('button');
+                bayarBtn.className = 'btn btn-success btn-sm';
+                bayarBtn.innerHTML = '<i class="fas fa-check"></i> Bayar';
+                bayarBtn.onclick = () => updateStatusLunas(row);
+                actionTd.appendChild(bayarBtn);
+                tr.appendChild(actionTd);
+
                 tableBody.appendChild(tr);
             });
         }
 
-        // Fungsi untuk menyiapkan tombol paginasi
+        // Fungsi untuk mengatur paginasi
         function setupPagination(data) {
-            const pagination = document.getElementById('pagination');
-            pagination.innerHTML = ''; // Bersihkan kontrol paginasi sebelum menampilkan yang baru
-
-            // Menghitung jumlah halaman
             const totalPages = Math.ceil(data.length / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = ''; // Bersihkan paginasi sebelumnya
 
+            // Tombol halaman sebelumnya
+            if (currentPage > 1) {
+                const prevBtn = document.createElement('li');
+                prevBtn.className = 'page-item';
+                prevBtn.innerHTML = `<a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
+                prevBtn.onclick = () => {
+                    currentPage--;
+                    renderTable(allData);
+                    setupPagination(allData);
+                };
+                pagination.appendChild(prevBtn);
+            }
+
+            // Tombol halaman
             for (let i = 1; i <= totalPages; i++) {
-                const li = document.createElement('li');
-                li.classList.add('page-item');
-                if (i === currentPage) {
-                    li.classList.add('active');
-                }
-                const a = document.createElement('a');
-                a.classList.add('page-link');
-                a.href = '#';
-                a.textContent = i;
-                a.addEventListener('click', (event) => {
-                    event.preventDefault();
+                const pageItem = document.createElement('li');
+                pageItem.className = `page-item${i === currentPage ? ' active' : ''}`;
+                pageItem.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                pageItem.onclick = () => {
                     currentPage = i;
-                    renderTable(data);
-                    setupPagination(data); // Perbarui paginasi setelah mengganti halaman
-                });
-                li.appendChild(a);
-                pagination.appendChild(li);
+                    renderTable(allData);
+                    setupPagination(allData);
+                };
+                pagination.appendChild(pageItem);
+            }
+
+            // Tombol halaman berikutnya
+            if (currentPage < totalPages) {
+                const nextBtn = document.createElement('li');
+                nextBtn.className = 'page-item';
+                nextBtn.innerHTML = `<a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
+                nextBtn.onclick = () => {
+                    currentPage++;
+                    renderTable(allData);
+                    setupPagination(allData);
+                };
+                pagination.appendChild(nextBtn);
             }
         }
 
-        // Fungsi untuk memfilter data berdasarkan form pencarian
-        function filterData(event) {
-            event.preventDefault(); // Mencegah pengiriman form
+        // Fungsi untuk memperbarui status menjadi "Lunas"
+        async function updateStatusLunas(row) {
+            try {
+                const formData = new FormData();
+                formData.append('SheetName', 'Penggunaan Kok'); // Nama sheet
+                formData.append('Tanggal', formatDate(row[0]));
+                formData.append('Nama', row[1]);
+                formData.append('JumlahKok', row[2]);
+                formData.append('TotalBiaya', row[3]);
+                formData.append('Datetime', new Date().toISOString());
+                formData.append('UniqueCode', row[5]); // Menambahkan UniqueCode
 
-            const namaInput = document.getElementById('selectNama').value.toLowerCase();
-            const tanggalInput = document.getElementById('searchTanggal').value;
+                console.log("Data yang dikirim:", {
+                    'SheetName': 'Penggunaan Kok',
+                    'Tanggal': formatDate(row[0]),
+                    'Nama': row[1],
+                    'JumlahKok': row[2],
+                    'TotalBiaya': row[3],
+                    'Datetime': new Date().toISOString(),
+                    'UniqueCode': row[5]
+                });
 
-            const filteredData = allData.filter(row => {
-                const nama = row[1].toLowerCase();
-                const tanggal = row[0];
-                const formattedTanggal = formatDate(tanggal);
-                const isNamaMatch = nama.includes(namaInput) || namaInput === '';
-                const isTanggalMatch = formatToISODate(formattedTanggal) === tanggalInput || tanggalInput === '';
-                return isNamaMatch && isTanggalMatch;
-            });
+                const response = await fetch(scriptURLUpdate, {
+                    method: 'POST',
+                    body: formData
+                });
 
-            currentPage = 1; // Reset ke halaman pertama saat melakukan pencarian
+                const result = await response.json();
+                console.log("Respons dari server:", result);
+
+                if (response.ok && result.result === 'success') {
+                    alert('Status berhasil diperbarui menjadi Lunas.');
+                    fetchUsageData(); // Refresh data setelah update
+                } else {
+                    alert('Gagal memperbarui status.');
+                }
+            } catch (error) {
+                console.error('Error updating status:', error);
+                alert('Terjadi kesalahan saat memperbarui status.');
+            }
+        }
+
+        // Fungsi untuk menangani form pencarian
+        document.getElementById('searchForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const tanggal = document.getElementById('searchTanggal').value;
+            const nama = document.getElementById('selectNama').value;
+
+            // Filter data sesuai dengan kriteria pencarian
+            let filteredData = allData;
+            if (tanggal) {
+                const formattedTanggal = formatToISODate(tanggal);
+                filteredData = filteredData.filter(row => new Date(row[0]).toISOString().split('T')[0] === formattedTanggal);
+            }
+            if (nama) {
+                filteredData = filteredData.filter(row => row[1] === nama);
+            }
+
             renderTable(filteredData);
             setupPagination(filteredData);
-        }
+        });
 
-        // Fungsi untuk membersihkan filter pencarian
-        function clearSearch() {
-            document.getElementById('selectNama').value = '';
+        // Fungsi untuk menghapus filter pencarian
+        document.getElementById('clearSearch').addEventListener('click', () => {
             document.getElementById('searchTanggal').value = '';
+            document.getElementById('selectNama').value = '';
             renderTable(allData);
             setupPagination(allData);
-        }
+        });
 
-        // Event listener untuk form pencarian
-        document.getElementById('searchForm').addEventListener('submit', filterData);
-
-        // Event listener untuk tombol bersihkan pencarian
-        document.getElementById('clearSearch').addEventListener('click', clearSearch);
-
-        // Panggil fungsi untuk mengambil data saat halaman dimuat
-        window.addEventListener('load', () => {
+        // Ambil data dan nama pemain saat halaman dimuat
+        window.onload = () => {
             fetchUsageData();
             fetchNamaPemain();
-        });
+        };
     </script>
-
 </body>
 </html>
