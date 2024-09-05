@@ -64,8 +64,7 @@
             display: none;
         }
 
-
-                @media (max-width: 576px) {
+        @media (max-width: 576px) {
             .table {
                 font-size: 10px; /* Ukuran font kecil */
             }
@@ -80,6 +79,10 @@
             }
         }
 
+        /* Styling untuk tombol Admin */
+        #adminButton {
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -116,7 +119,7 @@
                         <th>(Rp)</th>
                         <th>Ket</th>
                         <th class="hide">UniqueCode</th>
-                        <th>Action</th>
+                        <th class="action-column hide">Action</th>
                     </tr>
                 </thead>
                 <tbody id="data-table-body">
@@ -137,6 +140,11 @@
         <a href="index.html" class="btn btn-secondary">Back</a>
     </div>
 
+    <!-- Tombol Admin -->
+    <div class="text-end mb-2">
+        <button id="adminButton" class="btn btn-warning">Admin</button>
+    </div>
+
     <!-- Bootstrap JS dan dependensi -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Font Awesome JS (Opsional) -->
@@ -150,6 +158,7 @@
         let allData = []; // Menyimpan semua data yang diambil dari Google Sheets
         const itemsPerPage = 20; // Jumlah item per halaman
         let currentPage = 1; // Halaman saat ini
+        let isAdmin = false; // Status admin
 
         // Fungsi untuk mengambil data dari Google Sheets
         async function fetchUsageData() {
@@ -215,7 +224,7 @@
         }
 
         // Fungsi untuk menampilkan data ke dalam tabel
-            function renderTable(data) {
+        function renderTable(data) {
             const tableBody = document.getElementById('data-table-body');
             tableBody.innerHTML = ''; // Bersihkan tabel sebelum menampilkan data baru
 
@@ -228,7 +237,7 @@
             if (paginatedData.length === 0) {
                 const noDataRow = document.createElement('tr');
                 const noDataCell = document.createElement('td');
-                noDataCell.colSpan = 7; // Memastikan sel menutupi semua kolom
+                noDataCell.colSpan = isAdmin ? 7 : 6; // Memastikan sel menutupi semua kolom kecuali Action
                 noDataCell.classList.add('text-center');
                 noDataCell.textContent = 'Tidak ada data yang ditemukan.';
                 noDataRow.appendChild(noDataCell);
@@ -253,23 +262,33 @@
                     tr.appendChild(td);
                 });
 
-                // Tambahkan kolom action
-                const actionTd = document.createElement('td');
-                const bayarBtn = document.createElement('button');
-                bayarBtn.className = 'btn btn-success btn-sm';
-                bayarBtn.innerHTML = '<i class="fas fa-check"></i>';
-                bayarBtn.style.fontSize = '10px';  // Ukuran font lebih kecil
-                bayarBtn.style.padding = '2px 5px';  // Padding lebih kecil
-                bayarBtn.style.minWidth = '10px';  // Lebar minimal tombol
-                bayarBtn.onclick = () => updateStatusLunas(row);
-                actionTd.appendChild(bayarBtn);
-                tr.appendChild(actionTd);
-
+                if (isAdmin) {
+                    // Tambahkan kolom action hanya jika isAdmin true
+                    const actionTd = document.createElement('td');
+                    actionTd.className = 'action-column';
+                    const bayarBtn = document.createElement('button');
+                    bayarBtn.className = 'btn btn-success btn-sm';
+                    bayarBtn.innerHTML = '<i class="fas fa-check"></i>';
+                    bayarBtn.style.fontSize = '10px';  // Ukuran font lebih kecil
+                    bayarBtn.style.padding = '2px 5px';  // Padding lebih kecil
+                    bayarBtn.style.minWidth = '10px';  // Lebar minimal tombol
+                    bayarBtn.onclick = () => updateStatusLunas(row);
+                    actionTd.appendChild(bayarBtn);
+                    tr.appendChild(actionTd);
+                }
 
                 tableBody.appendChild(tr);
             });
-        }
 
+            // Update jumlah kolom jika tidak admin
+            const tableHeader = document.querySelector('thead tr');
+            const actionHeader = tableHeader.querySelector('th.action-column');
+            if (isAdmin) {
+                actionHeader.classList.remove('hide');
+            } else {
+                actionHeader.classList.add('hide');
+            }
+        }
 
         // Fungsi untuk mengatur paginasi
         function setupPagination(data) {
@@ -282,10 +301,11 @@
                 const prevBtn = document.createElement('li');
                 prevBtn.className = 'page-item';
                 prevBtn.innerHTML = `<a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
-                prevBtn.onclick = () => {
+                prevBtn.onclick = (e) => {
+                    e.preventDefault();
                     currentPage--;
-                    renderTable(allData);
-                    setupPagination(allData);
+                    renderTable(data);
+                    setupPagination(data);
                 };
                 pagination.appendChild(prevBtn);
             }
@@ -295,10 +315,11 @@
                 const pageItem = document.createElement('li');
                 pageItem.className = `page-item${i === currentPage ? ' active' : ''}`;
                 pageItem.innerHTML = `<a class="page-link" href="#">${i}</a>`;
-                pageItem.onclick = () => {
+                pageItem.onclick = (e) => {
+                    e.preventDefault();
                     currentPage = i;
-                    renderTable(allData);
-                    setupPagination(allData);
+                    renderTable(data);
+                    setupPagination(data);
                 };
                 pagination.appendChild(pageItem);
             }
@@ -308,10 +329,11 @@
                 const nextBtn = document.createElement('li');
                 nextBtn.className = 'page-item';
                 nextBtn.innerHTML = `<a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
-                nextBtn.onclick = () => {
+                nextBtn.onclick = (e) => {
+                    e.preventDefault();
                     currentPage++;
-                    renderTable(allData);
-                    setupPagination(allData);
+                    renderTable(data);
+                    setupPagination(data);
                 };
                 pagination.appendChild(nextBtn);
             }
@@ -387,6 +409,21 @@
             document.getElementById('selectNama').value = '';
             renderTable(allData);
             setupPagination(allData);
+        });
+
+        // Fungsi untuk menangani login Admin
+        document.getElementById('adminButton').addEventListener('click', () => {
+            const password = prompt('Masukkan password Admin:');
+            const adminPassword = 'admin123'; // Ganti dengan password yang diinginkan
+
+            if (password === adminPassword) {
+                isAdmin = true;
+                renderTable(allData);
+                setupPagination(allData);
+                alert('Anda sekarang masuk sebagai Admin.');
+            } else {
+                alert('Password salah.');
+            }
         });
 
         // Ambil data dan nama pemain saat halaman dimuat
