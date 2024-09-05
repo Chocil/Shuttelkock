@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Data Total Kok</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f4f4f4;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        table-layout: fixed; /* Mengatur tabel untuk ukuran kolom tetap */
+      }
+
+      th, td {
+        padding: 8px; /* Mengurangi padding untuk mengecilkan ukuran sel */
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        overflow: hidden; /* Menghindari teks meluber dari sel */
+        text-overflow: ellipsis; /* Menambahkan "..." jika teks terlalu panjang */
+        white-space: nowrap; /* Menghindari baris baru dalam sel */
+      }
+
+      th {
+        background-color: #4CAF50;
+        color: white;
+        font-size: 14px; /* Mengurangi ukuran font header */
+      }
+
+      td {
+        font-size: 12px; /* Mengurangi ukuran font sel data */
+      }
+
+      tr:hover {
+        background-color: #f1f1f1;
+      }
+
+      /* Style untuk loading spinner */
+      #loading {
+        text-align: center;
+        margin: 50px 0;
+        font-size: 16px;
+        color: #555;
+      }
+
+      /* Media Queries untuk tampilan mobile */
+      @media (max-width: 768px) {
+        table {
+          font-size: 12px;
+        }
+
+        th, td {
+          padding: 6px;
+        }
+
+        h2 {
+          font-size: 1.5em;
+        }
+
+        #loading {
+          font-size: 14px;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        table {
+          font-size: 10px;
+        }
+
+        th, td {
+          padding: 4px;
+        }
+
+        h2 {
+          font-size: 1.2em;
+        }
+
+        #loading {
+          font-size: 12px;
+        }
+      }
+    </style>
+    <script>
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbzitEV9IoBIx-3WF92sdvoazrwKqxyDsjOOItQVDtmGBQ86JmZgwP_Vlj_b1ArF390/exec';
+
+      async function loadData() {
+        document.getElementById('loading').style.display = 'block';
+        try {
+          const response = await fetch(`${scriptUrl}?sheetName=Total%20Kok`);
+          const data = await response.json();
+          displayData(data);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          document.getElementById('loading').style.display = 'none';
+        }
+      }
+
+      function displayData(data) {
+        const table = document.getElementById('data-table');
+        table.innerHTML = '';  // Kosongkan tabel sebelum memasukkan data baru
+
+        // Iterasi setiap baris data dari sheet
+        data.forEach(row => {
+          const tr = document.createElement('tr');
+          row.forEach(cell => {
+            const td = document.createElement('td');
+            td.textContent = cell;
+            tr.appendChild(td);
+          });
+          table.appendChild(tr);
+        });
+      }
+    </script>
+  </head>
+  <body onload="loadData()">
+    <h2>Data Perhitungan Shuttlecock"</h2>
+    <div id="loading">Loading...</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Nama</th>
+          <th>Jumlah Kok</th>
+          <th>Total Uang</th>
+          <th>Total</th>
+          <th>Total Uang Masuk</th>
+        </tr>
+      </thead>
+      <tbody id="data-table">
+        <!-- Data dari Sheet akan muncul di sini -->
+      </tbody>
+    </table>
+
+    <div class="text-center py-4">
+        <a href="index.html" class="btn btn-secondary">Back</a>
+    </div>
+  </body>
+</html>
