@@ -250,31 +250,31 @@ header {
     <div class="container">
         <form id="playerForm" method="POST" action="https://script.google.com/macros/s/AKfycbxUkK7OHpR8_kCXxxOGL3gBkwaio6782AhBuxXnOom93ZPKQ6Vzu-pkl300SmHK8nlv/exec" onsubmit="handlePlayerFormSubmit(event)">
             <div class="mb-3">
-                <label for="playerName" class="form-label">Nama Pemain</label>
+                <label for="playerName" class="form-label">Tambah Nama Pemain : </label>
                 <input type="text" class="form-control" id="playerName" name="Nama" required>
             </div>
             <input type="hidden" name="SheetName" value="Nama Pemain">
-            <button type="submit" class="btn btn-primary">Tambah Nama Pemain</button>
+            <button type="submit" class="btn btn-primary">Kirim</button>
         </form>
 
         <h2 class="text-center py-4">Pencatat Kok</h2>
         <form id="dataForm" method="POST" onsubmit="handleFormSubmit(event)">
             <div class="mb-3">
-                <label for="nama" class="form-label">Nama Pemain</label>
+                <label for="nama" class="form-label">Nama Pemain :</label>
                 <select class="form-control" id="nama" name="Nama" required>
                     <option value="">Pilih Nama Pemain</option>
                 </select>
             </div>
             <div class="mb-3">
-                <label for="tanggal" class="form-label">Tanggal</label>
+                <label for="tanggal" class="form-label">Tanggal :</label>
                 <input type="date" class="form-control" id="tanggal" name="Tanggal" required>
             </div>
             <div class="mb-3">
-                <label for="jumlahKok" class="form-label">Jumlah Kok</label>
+                <label for="jumlahKok" class="form-label">Jumlah Kok :</label>
                 <input type="number" class="form-control" id="jumlahKok" name="JumlahKok" min="1" required oninput="hitungBiaya()">
             </div>
             <div class="mb-3">
-                <label for="totalBiaya" class="form-label">Total Biaya (Rp)</label>
+                <label for="totalBiaya" class="form-label">Total Biaya (Rp) :</label>
                 <input type="text" class="form-control" id="totalBiaya" name="TotalBiaya" readonly>
             </div>
             <input type="hidden" name="SheetName" value="Penggunaan Kok">
