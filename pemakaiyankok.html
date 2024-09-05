@@ -64,6 +64,22 @@
             display: none;
         }
 
+
+                @media (max-width: 576px) {
+            .table {
+                font-size: 10px; /* Ukuran font kecil */
+            }
+            
+            th, td {
+                padding: 5px; /* Mengurangi padding */
+                white-space: nowrap; /* Mencegah teks masuk ke baris baru */
+            }
+            
+            .table-responsive {
+                overflow-x: auto; /* Memungkinkan scroll horizontal pada layar kecil */
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -241,10 +257,14 @@
                 const actionTd = document.createElement('td');
                 const bayarBtn = document.createElement('button');
                 bayarBtn.className = 'btn btn-success btn-sm';
-                bayarBtn.innerHTML = '<i class="fas fa-check"></i> Bayar';
+                bayarBtn.innerHTML = '<i class="fas fa-check"></i>';
+                bayarBtn.style.fontSize = '10px';  // Ukuran font lebih kecil
+                bayarBtn.style.padding = '2px 5px';  // Padding lebih kecil
+                bayarBtn.style.minWidth = '10px';  // Lebar minimal tombol
                 bayarBtn.onclick = () => updateStatusLunas(row);
                 actionTd.appendChild(bayarBtn);
                 tr.appendChild(actionTd);
+
 
                 tableBody.appendChild(tr);
             });
