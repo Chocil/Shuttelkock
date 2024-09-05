@@ -227,7 +227,7 @@
                     if (index === 0) {
                         td.textContent = formatDate(cell); // Format tanggal
                     } else if (index === 3) {
-                        td.textContent = `Rp ${parseInt(cell).toLocaleString()}`; // Format mata uang
+                        td.textContent = ` ${parseInt(cell).toLocaleString()}`; // Format mata uang
                     } else if (index === 5) {
                         td.textContent = cell;
                         td.classList.add('hide'); // Sembunyikan kolom UniqueCode
