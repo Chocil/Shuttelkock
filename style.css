@@ -376,8 +376,8 @@
     padding: 3px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 10px; /* Menyesuaikan ukuran font untuk input */
-    width: 80px; /* Mengatur lebar input tanggal */
+    font-size: 12px; /* Menyesuaikan ukuran font untuk input */
+    width: 100px; /* Mengatur lebar input tanggal */
 }
 
 #searchForm button {
@@ -385,7 +385,7 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 12px; 
+    font-size: 14px; /* Menyesuaikan ukuran font untuk tombol */
 }
 
 #searchForm button.btn-search {
