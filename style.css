@@ -1,0 +1,360 @@
+
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        h1 {
+            font-family: 'Anta', sans-serif; /* Font yang disebutkan */
+            text-align: center;
+            color: #13007c; /* Warna teks */
+            font-weight: bold; /* Menjadikan teks menjadi bold */
+        }
+        .container {
+            background-color: #e9e8e8;
+            padding: 10px; /* Reduce container padding */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            margin: auto;
+            overflow-x: auto; /* Enable horizontal scroll on small screens */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 12px; /* Reduce font size */
+        }
+
+        th, td {
+            border: 1px solid #9e9d9d;
+            padding: 4px; /* Reduce padding */
+            text-align: center;
+        }
+
+        th {
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        /* Styling for table rows */
+        tbody tr:nth-child(even) {
+            background-color: #b8b3b3; /* Light gray for even rows */
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #e0dfdf; /* White for odd rows */
+        }
+
+        .btn {
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            margin: 2px;
+            padding: 8px 12px; /* Increase padding */
+            font-size: 14px; /* Increase font size */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+        }
+
+        .btn-add {
+            background-color: #28a745; /* Green */
+            color: white;
+            border: 1px solid #218838; /* Darker green border */
+        }
+
+        .btn-add:hover {
+            background-color: #218838; /* Darker green */
+        }
+
+        .btn-update {
+            background-color: #28a745; /* Green */
+            color: white;
+            border: 1px solid #218838; /* Darker green border */
+        }
+
+        .btn-update:hover {
+            background-color: #218838; /* Darker green */
+        }
+
+        .btn-cancel {
+            background-color: #dc3545; /* Red */
+            color: white;
+            border: 1px solid #c82333; /* Darker red border */
+        }
+
+        .btn-cancel:hover {
+            background-color: #c82333; /* Darker red */
+        }
+
+        .btn-edit {
+            background-color: #007bff; /* Blue */
+            color: white;
+            border: 1px solid #0056b3; /* Darker blue border */
+        }
+
+        .btn-edit:hover {
+            background-color: #0056b3; /* Darker blue */
+        }
+
+        .btn-delete {
+            background-color: #dc3545; /* Red */
+            color: white;
+            border: 1px solid #c82333; /* Darker red border */
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333; /* Darker red */
+        }
+
+        .btn .fa {
+            margin: 0;
+            font-size: 12px; /* Increase icon size */
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 4px; /* Increase spacing between buttons */
+        }
+
+        input, button {
+            margin: 5px;
+            width: calc(100% - 22px);
+            box-sizing: border-box;
+        }
+
+        .edit-form {
+            display: none;
+            margin-top: 20px;
+        }
+
+        /* Hide the ID column by default */
+        .hide-column {
+            display: none;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            table {
+                font-size: 10px; /* Further reduce font size on small screens */
+            }
+
+            th, td {
+                padding: 2px; /* Further reduce padding */
+            }
+
+            .btn {
+                padding: 4px; /* Adjust padding */
+                font-size: 12px; /* Adjust font size */
+            }
+
+            .btn .fa {
+                font-size: 10px; /* Adjust icon size */
+            }
+
+            .container {
+                padding: 5px; /* Further reduce container padding */
+            }
+
+            /* Hide the ID column on small screens */
+            th:nth-child(5),
+            td:nth-child(5) {
+                display: none;
+            }
+        }
+
+        .btn-home {
+            display: inline-block;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            background-color: #0088ff; /* Warna background */
+            border: 1px solid #6c757d; /* Warna border */
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.25rem;
+            transition: all 0.2s ease-in-out;
+            text-decoration: none;
+            color: #fff; /* Warna teks */
+            margin-top: 20px; /* Menambahkan jarak atas */
+        }
+
+        .btn-home:hover {
+            background-color: #5a6268; /* Warna background saat di-hover */
+            border-color: #545b62; /* Warna border saat di-hover */
+            color: #fff; /* Warna teks saat di-hover */
+        }
+
+        .btn-home:active {
+            background-color: #545b62; /* Warna background saat tombol ditekan */
+            border-color: #4e555b; /* Warna border saat tombol ditekan */
+        }
+
+        .btn-home:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(130, 138, 145, 0.5); /* Efek fokus */
+        }
+
+        /* CSS untuk pop-up rekapan kas */
+.popup {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    max-width: 400px;
+    width: 90%;
+    position: relative;
+}
+
+.popup h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+}
+
+.popup p {
+    font-size: 18px;
+    margin: 10px 0;
+    color: #555;
+}
+
+.popup span {
+    font-weight: bold;
+    color: #000;
+}
+
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.btn-popup {
+    display: inline-block;
+    margin: 20px 0;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.btn-popup:hover {
+    background-color: #218838;
+}
+
+/* Tombol tutup kecil di pojok kanan atas */
+.btn-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.btn-close:hover {
+    background-color: #c82333;
+}
+
+/* Mengatur teks di dalam pop-up agar rapi */
+.popup p {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.popup p span {
+    text-align: right;
+}
+
+/* Responsive style untuk pop-up */
+@media (max-width: 600px) {
+    .popup {
+        width: 90%;
+        padding: 15px;
+    }
+
+    .popup h2 {
+        font-size: 20px;
+    }
+
+    .popup p {
+        font-size: 16px;
+    }
+
+    .btn-popup {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+
+    .btn-close {
+        width: 25px;
+        height: 25px;
+        font-size: 16px;
+    }
+}
+
+/* CSS untuk tabel rekap */
+#rekapTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+}
+
+#rekapTable th, #rekapTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#rekapTable th {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+#rekapTable tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+#rekapTable tbody tr:nth-child(even) {
+    background-color: #f1f1f1;
+}
+
+#rekapTable tbody tr:hover {
+    background-color: #e2e2e2;
+}
