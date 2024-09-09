@@ -212,89 +212,7 @@
             box-shadow: 0 0 0 0.2rem rgba(130, 138, 145, 0.5); /* Efek fokus */
         }
 
-        /* Modal Styles */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
-    max-width: 600px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.close-btn {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    
-}
-
-.close-btn:hover,
-.close-btn:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.summary-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-.summary-table th, .summary-table td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: center;
-}
-
-.summary-table th {
-    background-color: #007bff;
-    color: white;
-    font-weight: bold;
-}
-
-.summary-table td {
-    background-color: #f9f9f9;
-}
-
-.summary-table tr:nth-child(even) td {
-    background-color: #f2f2f2;
-}
-
-.summary-table td#modalIncome, .summary-table td#modalExpense, .summary-table td#modalCash {
-    font-weight: bold;
-    color: #333;
-}
-
-#searchForm {
-    margin: 20px 0;
-    text-align: center;
-}
-
-#searchForm label {
-    margin-right: 10px;
-}
-
-#searchForm input {
-    margin-right: 10px;
-}
+        
 
     </style>
 </head>
@@ -320,14 +238,6 @@
             <button class="btn btn-cancel" id="cancelEditBtn" onclick="cancelEdit()">Batal</button>
         </div>
 
-        <div id="searchForm">
-            <label for="startDate">Tanggal Mulai:</label>
-            <input type="date" id="startDate">
-            <label for="endDate">Tanggal Akhir:</label>
-            <input type="date" id="endDate">
-            <button class="btn btn-add" id="searchBtn">Cari</button>
-        </div>
-        
         <table id="dataTable">
             <thead>
                 <tr>
@@ -344,37 +254,10 @@
             </tbody>
         </table>
 
-        <div class="text-center py-4"></div>
+        <div class="text-center py-4">
             <a href="index.html" class="btn-home">Home</a>
-            <a id="openSummaryBtn" class="btn-home">Lihat Ringkasan Kas</a>
         </div>
-
-        <!-- Modal Structure -->
-        <div id="summaryModal" class="modal">
-            <div class="modal-content">
-                <span class="close-btn" onclick="closeModal()">&times;</span>
-                <h2>Ringkasan Kas</h2>
-                <table class="summary-table">
-                    <thead>
-                        <tr>
-                            <th colspan="2">Uang Masuk</th>
-                            <th colspan="2">Uang Keluar</th>
-                            <th colspan="2">Uang Kas</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Jumlah</td>
-                            <td id="modalIncome">0</td>
-                            <td>Jumlah</td>
-                            <td id="modalExpense">0</td>
-                            <td>Total</td>
-                            <td id="modalCash">0</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        
 
     </div>
 
@@ -502,7 +385,7 @@
                     alert('Data tidak ditemukan.');
                 }
             } catch (error) {
-                alert('Gagal memuat data untuk diedit: ' + error.message);
+                alert('Gagal memuat data entri: ' + error.message);
             } finally {
                 setTimeout(() => disableButtons(false), 1000); // Aktifkan tombol setelah 1 detik
             }
@@ -524,11 +407,11 @@
 
             const params = new URLSearchParams({
                 SheetName: 'Catatan Kas',
-                id: rowId,
                 tanggal: date,
                 keterangan: description,
                 uangMasuk: income,
                 uangKeluar: expense,
+                rowId: rowId,
                 action: 'update'
             });
 
@@ -539,7 +422,7 @@
                 });
                 const result = await response.json();
                 if (result.result === 'success') {
-                    alert('Data berhasil diperbarui');
+                    alert('Data berhasil diperbarui.');
                     document.getElementById('editForm').style.display = 'none';
                     document.getElementById('entryForm').style.display = 'block';
                     resetEntryForm(); // Reset form
@@ -559,7 +442,7 @@
                 disableButtons(true); // Nonaktifkan tombol sebelum alert
                 const params = new URLSearchParams({
                     SheetName: 'Catatan Kas',
-                    id: rowId,
+                    rowId: rowId,
                     action: 'delete'
                 });
 
@@ -570,7 +453,7 @@
                     });
                     const result = await response.json();
                     if (result.result === 'success') {
-                        alert('Data berhasil dihapus');
+                        alert('Data berhasil dihapus.');
                         loadEntries();
                     } else {
                         alert('Gagal menghapus data: ' + (result.error || 'Kesalahan tidak diketahui'));
@@ -586,94 +469,32 @@
         function cancelEdit() {
             document.getElementById('editForm').style.display = 'none';
             document.getElementById('entryForm').style.display = 'block';
-            resetEntryForm(); // Reset form
         }
 
-        async function openModal() {
-            try {
-                const response = await fetch(`${BASE_URL}?sheetName=Catatan Kas`);
-                const data = await response.json();
-                let totalIncome = 0;
-                let totalExpense = 0;
+        document.addEventListener('DOMContentLoaded', loadEntries);
 
-                data.slice(1).forEach(row => {
-                    totalIncome += parseFloat(row[2] || 0);
-                    totalExpense += parseFloat(row[3] || 0);
-                });
-
-                const totalCash = totalIncome - totalExpense;
-
-                document.getElementById('modalIncome').textContent = totalIncome.toLocaleString('id-ID');
-                document.getElementById('modalExpense').textContent = totalExpense.toLocaleString('id-ID');
-                document.getElementById('modalCash').textContent = totalCash.toLocaleString('id-ID');
-
-                document.getElementById('summaryModal').style.display = 'block';
-            } catch (error) {
-                alert('Gagal memuat ringkasan kas: ' + error.message);
-            }
-        }
-
-        function closeModal() {
-            document.getElementById('summaryModal').style.display = 'none';
-        }
-
-        document.getElementById('openSummaryBtn').addEventListener('click', openModal);
-
-        loadEntries();
-
-        document.getElementById('searchBtn').addEventListener('click', loadEntries);
-
-async function loadEntries() {
-    try {
-        const startDate = document.getElementById('startDate').value;
-        const endDate = document.getElementById('endDate').value;
-
-        // Tambahkan parameter tanggal ke URL jika ada
-        const url = new URL(BASE_URL);
-        url.searchParams.append('sheetName', 'Catatan Kas');
-
-        if (startDate) url.searchParams.append('startDate', startDate);
-        if (endDate) url.searchParams.append('endDate', endDate);
-
-        const response = await fetch(url);
-        const data = await response.json();
-        const tableBody = document.querySelector('#dataTable tbody');
-        tableBody.innerHTML = ''; // Kosongkan baris yang ada
-
-        // Konversi data menjadi array objek dan urutkan berdasarkan tanggal
-        const entries = data.slice(1).map(row => ({
-            date: row[0],
-            description: row[1],
-            income: row[2],
-            expense: row[3],
-            id: row[4]
-        })).filter(entry => {
-            const entryDate = new Date(entry.date);
-            const start = startDate ? new Date(startDate) : new Date('1900-01-01');
-            const end = endDate ? new Date(endDate) : new Date();
-            return entryDate >= start && entryDate <= end;
-        }).sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        entries.forEach(entry => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${formatDate(entry.date)}</td>
-                <td>${entry.description}</td>
-                <td>${Number(entry.income).toLocaleString('id-ID')}</td>
-                <td>${Number(entry.expense).toLocaleString('id-ID')}</td>
-                <td class="hide-column">${entry.id}</td>
-                <td class="action-buttons">
-                    <button class="btn btn-edit" onclick="editEntry('${entry.id}')"><i class="fas fa-pen"></i></button>
-                    <button class="btn btn-delete" onclick="deleteEntry('${entry.id}')"><i class="fas fa-trash"></i></button>
-                </td>
-            `;
-            tableBody.appendChild(tr);
-        });
-
-    } catch (error) {
-        alert('Gagal memuat data: ' + error.message);
-    }
+        // Fungsi untuk menambahkan titik sebagai pemisah ribuan
+function formatRupiah(angka) {
+    return angka.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
+
+// Event listener untuk input "Uang Masuk" dan "Uang Keluar"
+document.getElementById('income').addEventListener('input', function (e) {
+    this.value = formatRupiah(this.value);
+});
+
+document.getElementById('expense').addEventListener('input', function (e) {
+    this.value = formatRupiah(this.value);
+});
+
+document.getElementById('editIncome').addEventListener('input', function (e) {
+    this.value = formatRupiah(this.value);
+});
+
+document.getElementById('editExpense').addEventListener('input', function (e) {
+    this.value = formatRupiah(this.value);
+});
+
 
     </script>
 </body>
