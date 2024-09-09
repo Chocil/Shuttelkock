@@ -29,7 +29,19 @@
             <button class="btn btn-update" id="updateEntryBtn" onclick="updateEntry()">Perbarui Data</button>
             <button class="btn btn-cancel" id="cancelEditBtn" onclick="cancelEdit()">Batal</button>
         </div>
-
+        
+        <div id="searchForm">
+            <input type="date" id="startDate" placeholder="Tanggal Mulai">
+            <input type="date" id="endDate" placeholder="Tanggal Akhir">
+            <button class="btn btn-search" onclick="searchEntries()">
+                <i class="fas fa-search"></i> 
+            </button>
+            <button class="btn btn-reset" onclick="resetSearch()">
+                <i class="fas fa-trash"></i> 
+            </button>
+        </div>       
+        
+      
         <table id="dataTable">
             <thead>
                 <tr>
@@ -64,44 +76,6 @@
             <p>Total Kas: <span id="totalKas">Rp 0</span></p>
         </div>
     </div>
-
-    <style>
-        /* Style untuk pop-up */
-        .popup {
-            display: none;
-            position: fixed;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            z-index: 1000;
-        }
-
-        .popup-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-        }
-
-        .btn-close, .btn-popup {
-            cursor: pointer;
-        }
-
-        .btn-popup {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: blue;
-            color: white;
-        }
-    </style>
 
     <script>
         const BASE_URL = 'https://script.google.com/macros/s/AKfycbypE5gcCqVR5RnWLD5L0AqlHkB7e4sBWNL6UE51AdY9lPwowj164xpwyfa8g2TsZwBb/exec';
@@ -373,6 +347,63 @@
         function closePopup() {
             tutupPopup();
         }
+
+        async function searchEntries() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+
+    if (!startDate || !endDate) {
+        alert('Kedua tanggal wajib diisi!');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${BASE_URL}?sheetName=Catatan Kas`);
+        const data = await response.json();
+
+        // Filter data berdasarkan rentang tanggal
+        const filteredEntries = data.slice(1).filter(row => {
+            const entryDate = new Date(row[0]);
+            return entryDate >= new Date(startDate) && entryDate <= new Date(endDate);
+        }).map(row => ({
+            date: row[0],
+            description: row[1],
+            income: row[2],
+            expense: row[3],
+            id: row[4]
+        }));
+
+        const tableBody = document.querySelector('#dataTable tbody');
+        tableBody.innerHTML = ''; // Kosongkan baris yang ada
+
+        filteredEntries.forEach(entry => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${formatDate(entry.date)}</td>
+                <td>${entry.description}</td>
+                <td>${Number(entry.income).toLocaleString('id-ID')}</td>
+                <td>${Number(entry.expense).toLocaleString('id-ID')}</td>
+                <td class="hide-column">${entry.id}</td>
+                <td class="action-buttons">
+                    <button class="btn btn-edit" onclick="editEntry('${entry.id}')"><i class="fas fa-pen"></i></button>
+                    <button class="btn btn-delete" onclick="deleteEntry('${entry.id}')"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+
+    } catch (error) {
+        alert('Gagal memuat data: ' + error.message);
+    }
+}
+
+function resetSearch() {
+    document.getElementById('startDate').value = '';
+    document.getElementById('endDate').value = '';
+    loadEntries(); // Memuat kembali semua entri tanpa filter
+}
+
+
 
     </script>
 </body>
