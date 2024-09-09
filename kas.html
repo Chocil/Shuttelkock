@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Kas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Anta:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        h1 {
+            font-family: 'Anta', sans-serif; /* Font yang disebutkan */
+            text-align: center;
+            color: #13007c; /* Warna teks */
+            font-weight: bold; /* Menjadikan teks menjadi bold */
+        }
+        .container {
+            background-color: #e9e8e8;
+            padding: 10px; /* Reduce container padding */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            margin: auto;
+            overflow-x: auto; /* Enable horizontal scroll on small screens */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 12px; /* Reduce font size */
+        }
+
+        th, td {
+            border: 1px solid #9e9d9d;
+            padding: 4px; /* Reduce padding */
+            text-align: center;
+        }
+
+        th {
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        /* Styling for table rows */
+        tbody tr:nth-child(even) {
+            background-color: #b8b3b3; /* Light gray for even rows */
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #e0dfdf; /* White for odd rows */
+        }
+
+        .btn {
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            margin: 2px;
+            padding: 8px 12px; /* Increase padding */
+            font-size: 14px; /* Increase font size */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+        }
+
+        .btn-add {
+            background-color: #28a745; /* Green */
+            color: white;
+            border: 1px solid #218838; /* Darker green border */
+        }
+
+        .btn-add:hover {
+            background-color: #218838; /* Darker green */
+        }
+
+        .btn-update {
+            background-color: #28a745; /* Green */
+            color: white;
+            border: 1px solid #218838; /* Darker green border */
+        }
+
+        .btn-update:hover {
+            background-color: #218838; /* Darker green */
+        }
+
+        .btn-cancel {
+            background-color: #dc3545; /* Red */
+            color: white;
+            border: 1px solid #c82333; /* Darker red border */
+        }
+
+        .btn-cancel:hover {
+            background-color: #c82333; /* Darker red */
+        }
+
+        .btn-edit {
+            background-color: #007bff; /* Blue */
+            color: white;
+            border: 1px solid #0056b3; /* Darker blue border */
+        }
+
+        .btn-edit:hover {
+            background-color: #0056b3; /* Darker blue */
+        }
+
+        .btn-delete {
+            background-color: #dc3545; /* Red */
+            color: white;
+            border: 1px solid #c82333; /* Darker red border */
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333; /* Darker red */
+        }
+
+        .btn .fa {
+            margin: 0;
+            font-size: 12px; /* Increase icon size */
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 4px; /* Increase spacing between buttons */
+        }
+
+        input, button {
+            margin: 5px;
+            width: calc(100% - 22px);
+            box-sizing: border-box;
+        }
+
+        .edit-form {
+            display: none;
+            margin-top: 20px;
+        }
+
+        /* Hide the ID column by default */
+        .hide-column {
+            display: none;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            table {
+                font-size: 10px; /* Further reduce font size on small screens */
+            }
+
+            th, td {
+                padding: 2px; /* Further reduce padding */
+            }
+
+            .btn {
+                padding: 4px; /* Adjust padding */
+                font-size: 12px; /* Adjust font size */
+            }
+
+            .btn .fa {
+                font-size: 10px; /* Adjust icon size */
+            }
+
+            .container {
+                padding: 5px; /* Further reduce container padding */
+            }
+
+            /* Hide the ID column on small screens */
+            th:nth-child(5),
+            td:nth-child(5) {
+                display: none;
+            }
+        }
+
+        .btn-home {
+            display: inline-block;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            background-color: #0088ff; /* Warna background */
+            border: 1px solid #6c757d; /* Warna border */
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.25rem;
+            transition: all 0.2s ease-in-out;
+            text-decoration: none;
+            color: #fff; /* Warna teks */
+            margin-top: 20px; /* Menambahkan jarak atas */
+        }
+
+        .btn-home:hover {
+            background-color: #5a6268; /* Warna background saat di-hover */
+            border-color: #545b62; /* Warna border saat di-hover */
+            color: #fff; /* Warna teks saat di-hover */
+        }
+
+        .btn-home:active {
+            background-color: #545b62; /* Warna background saat tombol ditekan */
+            border-color: #4e555b; /* Warna border saat tombol ditekan */
+        }
+
+        .btn-home:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(130, 138, 145, 0.5); /* Efek fokus */
+        }
+
+        /* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 600px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.summary-table th, .summary-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+.summary-table th {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.summary-table td {
+    background-color: #f9f9f9;
+}
+
+.summary-table tr:nth-child(even) td {
+    background-color: #f2f2f2;
+}
+
+.summary-table td#modalIncome, .summary-table td#modalExpense, .summary-table td#modalCash {
+    font-weight: bold;
+    color: #333;
+}
+
+#searchForm {
+    margin: 20px 0;
+    text-align: center;
+}
+
+#searchForm label {
+    margin-right: 10px;
+}
+
+#searchForm input {
+    margin-right: 10px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>KAS PB SEGITIGA</h1>
+        <div id="entryForm">
+            <input type="date" id="date" placeholder="Tanggal" required>
+            <input type="text" id="description" placeholder="Keterangan">
+            <input type="number" id="income" placeholder="Uang Masuk">
+            <input type="number" id="expense" placeholder="Uang Keluar">
+            <button class="btn btn-add" id="addEntryBtn" onclick="addEntry()">Tambah Data</button>
+        </div>
+
+        <div id="editForm" class="edit-form">
+            <h2>Edit Data</h2>
+            <input type="hidden" id="editRowId">
+            <input type="date" id="editDate" placeholder="Tanggal" required>
+            <input type="text" id="editDescription" placeholder="Keterangan">
+            <input type="number" id="editIncome" placeholder="Uang Masuk">
+            <input type="number" id="editExpense" placeholder="Uang Keluar">
+            <button class="btn btn-update" id="updateEntryBtn" onclick="updateEntry()">Perbarui Data</button>
+            <button class="btn btn-cancel" id="cancelEditBtn" onclick="cancelEdit()">Batal</button>
+        </div>
+
+        <div id="searchForm">
+            <label for="startDate">Tanggal Mulai:</label>
+            <input type="date" id="startDate">
+            <label for="endDate">Tanggal Akhir:</label>
+            <input type="date" id="endDate">
+            <button class="btn btn-add" id="searchBtn">Cari</button>
+        </div>
+        
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Keterangan</th>
+                    <th>Masuk</th>
+                    <th>Keluar</th>
+                    <th class="hide-column">ID</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data akan dimasukkan di sini -->
+            </tbody>
+        </table>
+
+        <button id="openSummaryBtn" class="btn btn-edit">Lihat Ringkasan Kas</button>
+
+        <div class="text-center py-4"></div>
+            <a href="index.html" class="btn-home">Home</a>
+        </div>
+
+        <!-- Modal Structure -->
+        <div id="summaryModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+                <h2>Ringkasan Kas</h2>
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Uang Masuk</th>
+                            <th colspan="2">Uang Keluar</th>
+                            <th colspan="2">Uang Kas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Jumlah</td>
+                            <td id="modalIncome">0</td>
+                            <td>Jumlah</td>
+                            <td id="modalExpense">0</td>
+                            <td>Total</td>
+                            <td id="modalCash">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const BASE_URL = 'https://script.google.com/macros/s/AKfycbypE5gcCqVR5RnWLD5L0AqlHkB7e4sBWNL6UE51AdY9lPwowj164xpwyfa8g2TsZwBb/exec';
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = String(date.getFullYear()).slice(-2); // Dua digit terakhir dari tahun
+            return `${day}-${month}-${year}`;
+        }
+
+        function disableButtons(disable) {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.disabled = disable;
+                button.classList.toggle('disabled', disable);
+            });
+        }
+
+        function resetEntryForm() {
+            document.getElementById('date').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('income').value = '';
+            document.getElementById('expense').value = '';
+        }
+
+        async function loadEntries() {
+            try {
+                const response = await fetch(`${BASE_URL}?sheetName=Catatan Kas`);
+                const data = await response.json();
+                const tableBody = document.querySelector('#dataTable tbody');
+                tableBody.innerHTML = ''; // Kosongkan baris yang ada
+
+                // Konversi data menjadi array objek dan urutkan berdasarkan tanggal
+                const entries = data.slice(1).map(row => ({
+                    date: row[0],
+                    description: row[1],
+                    income: row[2],
+                    expense: row[3],
+                    id: row[4]
+                })).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                entries.forEach(entry => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${formatDate(entry.date)}</td>
+                        <td>${entry.description}</td>
+                        <td>${Number(entry.income).toLocaleString('id-ID')}</td>
+                        <td>${Number(entry.expense).toLocaleString('id-ID')}</td>
+                        <td class="hide-column">${entry.id}</td>
+                        <td class="action-buttons">
+                            <button class="btn btn-edit" onclick="editEntry('${entry.id}')"><i class="fas fa-pen"></i></button>
+                            <button class="btn btn-delete" onclick="deleteEntry('${entry.id}')"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+
+            } catch (error) {
+                alert('Gagal memuat data: ' + error.message);
+            }
+        }
+
+        async function addEntry() {
+            disableButtons(true); // Nonaktifkan tombol sebelum alert
+            const date = document.getElementById('date').value;
+            const description = document.getElementById('description').value;
+            const income = document.getElementById('income').value;
+            const expense = document.getElementById('expense').value;
+
+            if (!date) {
+                alert('Tanggal wajib diisi!');
+                setTimeout(() => disableButtons(false), 1000); // Aktifkan tombol setelah 1 detik
+                return;
+            }
+
+            const params = new URLSearchParams({
+                SheetName: 'Catatan Kas',
+                tanggal: date,
+                keterangan: description,
+                uangMasuk: income,
+                uangKeluar: expense,
+            });
+
+            try {
+                const response = await fetch(BASE_URL, {
+                    method: 'POST',
+                    body: params,
+                });
+                const result = await response.json();
+                if (result.result === 'success') {
+                    alert('Data berhasil ditambahkan dengan ID: ' + result.id);
+                    resetEntryForm(); // Reset form
+                    loadEntries();
+                } else {
+                    alert('Gagal menambahkan data: ' + (result.error || 'Kesalahan tidak diketahui'));
+                }
+            } catch (error) {
+                alert('Gagal menambahkan entri: ' + error.message);
+            } finally {
+                setTimeout(() => disableButtons(false), 1000); // Aktifkan tombol setelah 1 detik
+            }
+        }
+
+        async function editEntry(rowId) {
+            disableButtons(true); // Nonaktifkan tombol sebelum alert
+            document.getElementById('editRowId').value = rowId;
+            document.getElementById('editForm').style.display = 'block';
+            document.getElementById('entryForm').style.display = 'none';
+
+            try {
+                const response = await fetch(`${BASE_URL}?sheetName=Catatan Kas`);
+                const data = await response.json();
+                const entry = data.find(row => row[4] === rowId);
+
+                if (entry) {
+                    document.getElementById('editDate').value = entry[0];
+                    document.getElementById('editDescription').value = entry[1];
+                    document.getElementById('editIncome').value = entry[2];
+                    document.getElementById('editExpense').value = entry[3];
+                } else {
+                    alert('Data tidak ditemukan.');
+                }
+            } catch (error) {
+                alert('Gagal memuat data untuk diedit: ' + error.message);
+            } finally {
+                setTimeout(() => disableButtons(false), 1000); // Aktifkan tombol setelah 1 detik
+            }
+        }
+
+        async function updateEntry() {
+            disableButtons(true); // Nonaktifkan tombol sebelum alert
+            const rowId = document.getElementById('editRowId').value;
+            const date = document.getElementById('editDate').value;
+            const description = document.getElementById('editDescription').value;
+            const income = document.getElementById('editIncome').value;
+            const expense = document.getElementById('editExpense').value;
+
+            if (!date) {
+                alert('Tanggal wajib diisi!');
+                setTimeout(() => disableButtons(false), 1000); // Aktifkan tombol setelah 1 detik
+                return;
+            }
+
+            const params = new URLSearchParams({
+                SheetName: 'Catatan Kas',
+                id: rowId,
+                tanggal: date,
+                keterangan: description,
+                uangMasuk: income,
+                uangKeluar: expense,
+                action: 'update'
+            });
+
+            try {
+                const response = await fetch(BASE_URL, {
+                    method: 'POST',
+                    body: params,
+                });
+                const result = await response.json();
+                if (result.result === 'success') {
+                    alert('Data berhasil diperbarui');
+                    document.getElementById('editForm').style.display = 'none';
+                    document.getElementById('entryForm').style.display = 'block';
+                    resetEntryForm(); // Reset form
+                    loadEntries();
+                } else {
+                    alert('Gagal memperbarui data: ' + (result.error || 'Kesalahan tidak diketahui'));
+                }
+            } catch (error) {
+                alert('Gagal memperbarui entri: ' + error.message);
+            } finally {
+                setTimeout(() => disableButtons(false), 1000); // Aktifkan tombol setelah 1 detik
+            }
+        }
+
+        async function deleteEntry(rowId) {
+            if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+                disableButtons(true); // Nonaktifkan tombol sebelum alert
+                const params = new URLSearchParams({
+                    SheetName: 'Catatan Kas',
+                    id: rowId,
+                    action: 'delete'
+                });
+
+                try {
+                    const response = await fetch(BASE_URL, {
+                        method: 'POST',
+                        body: params,
+                    });
+                    const result = await response.json();
+                    if (result.result === 'success') {
+                        alert('Data berhasil dihapus');
+                        loadEntries();
+                    } else {
+                        alert('Gagal menghapus data: ' + (result.error || 'Kesalahan tidak diketahui'));
+                    }
+                } catch (error) {
+                    alert('Gagal menghapus entri: ' + error.message);
+                } finally {
+                    setTimeout(() => disableButtons(false), 1000); // Aktifkan tombol setelah 1 detik
+                }
+            }
+        }
+
+        function cancelEdit() {
+            document.getElementById('editForm').style.display = 'none';
+            document.getElementById('entryForm').style.display = 'block';
+            resetEntryForm(); // Reset form
+        }
+
+        async function openModal() {
+            try {
+                const response = await fetch(`${BASE_URL}?sheetName=Catatan Kas`);
+                const data = await response.json();
+                let totalIncome = 0;
+                let totalExpense = 0;
+
+                data.slice(1).forEach(row => {
+                    totalIncome += parseFloat(row[2] || 0);
+                    totalExpense += parseFloat(row[3] || 0);
+                });
+
+                const totalCash = totalIncome - totalExpense;
+
+                document.getElementById('modalIncome').textContent = totalIncome.toLocaleString('id-ID');
+                document.getElementById('modalExpense').textContent = totalExpense.toLocaleString('id-ID');
+                document.getElementById('modalCash').textContent = totalCash.toLocaleString('id-ID');
+
+                document.getElementById('summaryModal').style.display = 'block';
+            } catch (error) {
+                alert('Gagal memuat ringkasan kas: ' + error.message);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('summaryModal').style.display = 'none';
+        }
+
+        document.getElementById('openSummaryBtn').addEventListener('click', openModal);
+
+        loadEntries();
+
+        document.getElementById('searchBtn').addEventListener('click', loadEntries);
+
+async function loadEntries() {
+    try {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        // Tambahkan parameter tanggal ke URL jika ada
+        const url = new URL(BASE_URL);
+        url.searchParams.append('sheetName', 'Catatan Kas');
+
+        if (startDate) url.searchParams.append('startDate', startDate);
+        if (endDate) url.searchParams.append('endDate', endDate);
+
+        const response = await fetch(url);
+        const data = await response.json();
+        const tableBody = document.querySelector('#dataTable tbody');
+        tableBody.innerHTML = ''; // Kosongkan baris yang ada
+
+        // Konversi data menjadi array objek dan urutkan berdasarkan tanggal
+        const entries = data.slice(1).map(row => ({
+            date: row[0],
+            description: row[1],
+            income: row[2],
+            expense: row[3],
+            id: row[4]
+        })).filter(entry => {
+            const entryDate = new Date(entry.date);
+            const start = startDate ? new Date(startDate) : new Date('1900-01-01');
+            const end = endDate ? new Date(endDate) : new Date();
+            return entryDate >= start && entryDate <= end;
+        }).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        entries.forEach(entry => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${formatDate(entry.date)}</td>
+                <td>${entry.description}</td>
+                <td>${Number(entry.income).toLocaleString('id-ID')}</td>
+                <td>${Number(entry.expense).toLocaleString('id-ID')}</td>
+                <td class="hide-column">${entry.id}</td>
+                <td class="action-buttons">
+                    <button class="btn btn-edit" onclick="editEntry('${entry.id}')"><i class="fas fa-pen"></i></button>
+                    <button class="btn btn-delete" onclick="deleteEntry('${entry.id}')"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+
+    } catch (error) {
+        alert('Gagal memuat data: ' + error.message);
+    }
+}
+
+    </script>
+</body>
+</html>
