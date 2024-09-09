@@ -6,215 +6,7 @@
     <title>Data Kas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Anta:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-            padding: 20px;
-        }
-        h1 {
-            font-family: 'Anta', sans-serif; /* Font yang disebutkan */
-            text-align: center;
-            color: #13007c; /* Warna teks */
-            font-weight: bold; /* Menjadikan teks menjadi bold */
-        }
-        .container {
-            background-color: #e9e8e8;
-            padding: 10px; /* Reduce container padding */
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 100%;
-            margin: auto;
-            overflow-x: auto; /* Enable horizontal scroll on small screens */
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            font-size: 12px; /* Reduce font size */
-        }
-
-        th, td {
-            border: 1px solid #9e9d9d;
-            padding: 4px; /* Reduce padding */
-            text-align: center;
-        }
-
-        th {
-            background-color: #000000;
-            color: #ffffff;
-        }
-
-        /* Styling for table rows */
-        tbody tr:nth-child(even) {
-            background-color: #b8b3b3; /* Light gray for even rows */
-        }
-
-        tbody tr:nth-child(odd) {
-            background-color: #e0dfdf; /* White for odd rows */
-        }
-
-        .btn {
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            margin: 2px;
-            padding: 8px 12px; /* Increase padding */
-            font-size: 14px; /* Increase font size */
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
-        }
-
-        .btn-add {
-            background-color: #28a745; /* Green */
-            color: white;
-            border: 1px solid #218838; /* Darker green border */
-        }
-
-        .btn-add:hover {
-            background-color: #218838; /* Darker green */
-        }
-
-        .btn-update {
-            background-color: #28a745; /* Green */
-            color: white;
-            border: 1px solid #218838; /* Darker green border */
-        }
-
-        .btn-update:hover {
-            background-color: #218838; /* Darker green */
-        }
-
-        .btn-cancel {
-            background-color: #dc3545; /* Red */
-            color: white;
-            border: 1px solid #c82333; /* Darker red border */
-        }
-
-        .btn-cancel:hover {
-            background-color: #c82333; /* Darker red */
-        }
-
-        .btn-edit {
-            background-color: #007bff; /* Blue */
-            color: white;
-            border: 1px solid #0056b3; /* Darker blue border */
-        }
-
-        .btn-edit:hover {
-            background-color: #0056b3; /* Darker blue */
-        }
-
-        .btn-delete {
-            background-color: #dc3545; /* Red */
-            color: white;
-            border: 1px solid #c82333; /* Darker red border */
-        }
-
-        .btn-delete:hover {
-            background-color: #c82333; /* Darker red */
-        }
-
-        .btn .fa {
-            margin: 0;
-            font-size: 12px; /* Increase icon size */
-        }
-
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 4px; /* Increase spacing between buttons */
-        }
-
-        input, button {
-            margin: 5px;
-            width: calc(100% - 22px);
-            box-sizing: border-box;
-        }
-
-        .edit-form {
-            display: none;
-            margin-top: 20px;
-        }
-
-        /* Hide the ID column by default */
-        .hide-column {
-            display: none;
-        }
-
-        /* Responsive design */
-        @media (max-width: 600px) {
-            table {
-                font-size: 10px; /* Further reduce font size on small screens */
-            }
-
-            th, td {
-                padding: 2px; /* Further reduce padding */
-            }
-
-            .btn {
-                padding: 4px; /* Adjust padding */
-                font-size: 12px; /* Adjust font size */
-            }
-
-            .btn .fa {
-                font-size: 10px; /* Adjust icon size */
-            }
-
-            .container {
-                padding: 5px; /* Further reduce container padding */
-            }
-
-            /* Hide the ID column on small screens */
-            th:nth-child(5),
-            td:nth-child(5) {
-                display: none;
-            }
-        }
-
-        .btn-home {
-            display: inline-block;
-            font-weight: 400;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: middle;
-            user-select: none;
-            background-color: #0088ff; /* Warna background */
-            border: 1px solid #6c757d; /* Warna border */
-            padding: 0.375rem 0.75rem;
-            font-size: 1rem;
-            line-height: 1.5;
-            border-radius: 0.25rem;
-            transition: all 0.2s ease-in-out;
-            text-decoration: none;
-            color: #fff; /* Warna teks */
-            margin-top: 20px; /* Menambahkan jarak atas */
-        }
-
-        .btn-home:hover {
-            background-color: #5a6268; /* Warna background saat di-hover */
-            border-color: #545b62; /* Warna border saat di-hover */
-            color: #fff; /* Warna teks saat di-hover */
-        }
-
-        .btn-home:active {
-            background-color: #545b62; /* Warna background saat tombol ditekan */
-            border-color: #4e555b; /* Warna border saat tombol ditekan */
-        }
-
-        .btn-home:focus {
-            outline: none;
-            box-shadow: 0 0 0 0.2rem rgba(130, 138, 145, 0.5); /* Efek fokus */
-        }
-
-        
-
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
     <div class="container">
@@ -256,10 +48,60 @@
 
         <div class="text-center py-4">
             <a href="index.html" class="btn-home">Home</a>
+            <a class="btn-home" onclick="bukaPopup()">Lihat Rekap Kas</a>
         </div>
-        
 
+
+        <!-- Overlay untuk pop-up -->
+        <div class="popup-overlay" id="popupOverlay" onclick="tutupPopup()"></div>
+
+        <!-- Pop-up ringkasan kas -->
+        <div class="popup" id="popupRekap">
+            <button class="btn-close" onclick="tutupPopup()">✘</button>
+            <h2>Rekap Kas</h2>
+            <p>Jumlah Uang Masuk: <span id="totalIncome">Rp 0</span></p>
+            <p>Jumlah Uang Keluar: <span id="totalExpense">Rp 0</span></p>
+            <p>Total Kas: <span id="totalKas">Rp 0</span></p>
+        </div>
     </div>
+
+    <style>
+        /* Style untuk pop-up */
+        .popup {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            z-index: 1000;
+        }
+
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .btn-close, .btn-popup {
+            cursor: pointer;
+        }
+
+        .btn-popup {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: blue;
+            color: white;
+        }
+    </style>
 
     <script>
         const BASE_URL = 'https://script.google.com/macros/s/AKfycbypE5gcCqVR5RnWLD5L0AqlHkB7e4sBWNL6UE51AdY9lPwowj164xpwyfa8g2TsZwBb/exec';
@@ -474,27 +316,63 @@
         document.addEventListener('DOMContentLoaded', loadEntries);
 
         // Fungsi untuk menambahkan titik sebagai pemisah ribuan
-function formatRupiah(angka) {
-    return angka.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-}
+        function formatRupiah(angka) {
+            return angka.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
 
-// Event listener untuk input "Uang Masuk" dan "Uang Keluar"
-document.getElementById('income').addEventListener('input', function (e) {
-    this.value = formatRupiah(this.value);
-});
+        // Event listener untuk input "Uang Masuk" dan "Uang Keluar"
+        document.getElementById('income').addEventListener('input', function (e) {
+            this.value = formatRupiah(this.value);
+        });
 
-document.getElementById('expense').addEventListener('input', function (e) {
-    this.value = formatRupiah(this.value);
-});
+        document.getElementById('expense').addEventListener('input', function (e) {
+            this.value = formatRupiah(this.value);
+        });
 
-document.getElementById('editIncome').addEventListener('input', function (e) {
-    this.value = formatRupiah(this.value);
-});
+        document.getElementById('editIncome').addEventListener('input', function (e) {
+            this.value = formatRupiah(this.value);
+        });
 
-document.getElementById('editExpense').addEventListener('input', function (e) {
-    this.value = formatRupiah(this.value);
-});
+        document.getElementById('editExpense').addEventListener('input', function (e) {
+            this.value = formatRupiah(this.value);
+        });
 
+        // Fungsi untuk menghitung total uang masuk, uang keluar, dan total kas
+        function hitungRekapKas() {
+            let totalIncome = 0;
+            let totalExpense = 0;
+
+            const rows = document.querySelectorAll('#dataTable tbody tr');
+            rows.forEach(row => {
+                const income = parseInt(row.cells[2].innerText.replace(/\./g, '')) || 0;
+                const expense = parseInt(row.cells[3].innerText.replace(/\./g, '')) || 0;
+
+                totalIncome += income;
+                totalExpense += expense;
+            });
+
+            const totalKas = totalIncome - totalExpense;
+
+            document.getElementById('totalIncome').innerText = 'Rp ' + totalIncome.toLocaleString('id-ID');
+            document.getElementById('totalExpense').innerText = 'Rp ' + totalExpense.toLocaleString('id-ID');
+            document.getElementById('totalKas').innerText = 'Rp ' + totalKas.toLocaleString('id-ID');
+        }
+
+        // Fungsi untuk membuka pop-up
+        function bukaPopup() {
+            hitungRekapKas();
+            document.getElementById('popupOverlay').style.display = 'block';
+            document.getElementById('popupRekap').style.display = 'block';
+        }
+
+        // Fungsi untuk menutup pop-up
+        function tutupPopup() {
+            document.getElementById('popupOverlay').style.display = 'none';
+            document.getElementById('popupRekap').style.display = 'none';
+        }
+        function closePopup() {
+            tutupPopup();
+        }
 
     </script>
 </body>
