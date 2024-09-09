@@ -385,7 +385,7 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 12px; /* Menyesuaikan ukuran font untuk tombol */
+    font-size: 12px; 
 }
 
 #searchForm button.btn-search {
