@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Data Admin</title>
     <style>
         body {
@@ -24,10 +25,20 @@
         img {
             width: 200px; /* Memperbesar gambar menjadi 200px */
             height: auto;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+    
+        }
+
+        .logopb {
+            width: 200px; /* Menyesuaikan ukuran logo PB */
+            height: auto;
+            margin: 0 auto 20px auto; /* Menambahkan margin bawah dan menjadikannya pusat */
+            display: block; /* Memastikan gambar ditampilkan sebagai block untuk centering */
         }
 
         h1 {
+            font-family: 'Anta', sans-serif; /* Font yang disebutkan */
+            text-align: center;
             color: #17007c;
         }
 
@@ -45,6 +56,7 @@
             text-decoration: none;
             font-size: 16px;
             cursor: pointer;
+            display: inline-block;
         }
 
         .btn-back:hover {
@@ -53,6 +65,8 @@
 
         .admin-form {
             margin-top: 20px;
+            display: none; /* Form disembunyikan secara default */
+            text-align: center; /* Memastikan form berada di tengah secara horizontal */
         }
 
         .admin-form input[type="password"] {
@@ -76,8 +90,25 @@
         .admin-form input[type="submit"]:hover {
             background-color: #0d0059;
         }
+
+        .btn-container {
+            margin-bottom: 20px;
+            display: flex; /* Menggunakan flexbox untuk menempatkan tombol secara horizontal */
+            flex-direction: column; /* Mengatur tombol secara vertikal */
+            align-items: center; /* Menempatkan tombol di tengah secara horizontal */
+        }
+
+        .btn-container a,
+        .btn-container button {
+            margin: 10px 0; /* Jarak atas dan bawah antara tombol */
+        }
     </style>
     <script>
+        function showPasswordForm() {
+            document.getElementById('password-form').style.display = 'block';
+            document.getElementById('show-button').style.display = 'none';
+        }
+
         function validatePassword(event) {
             event.preventDefault(); // Mencegah form dari submit otomatis
             const password = document.getElementById('password').value;
@@ -91,18 +122,24 @@
 </head>
 <body>
     <div class="container">
-        <img src="icon3.gif" alt="Icon Admin">
+        <img class="logopb" src="logo.png" alt="Logo PB">
         <h1>Data Admin</h1>
         <p>Hanya admin yang bisa akses</p>
-        <a href="index.html" class="btn-back">Kembali ke Beranda</a>
+
+        <!-- Container untuk tombol-tombol -->
+        <div class="btn-container">
+            <a href="index.html" class="btn-back">Kembali ke Beranda</a>
+            <button id="show-button" class="btn-back" onclick="showPasswordForm()">Masuk</button>
+        </div>
 
         <!-- Form untuk login admin -->
-        <div class="admin-form">
+        <div id="password-form" class="admin-form">
             <form onsubmit="validatePassword(event)">
                 <input type="password" id="password" placeholder="Masukkan Password" required>
                 <input type="submit" value="Masuk">
             </form>
         </div>
+        <img src="icon3.gif" alt="Icon Admin">
     </div>
 </body>
 </html>
