@@ -365,6 +365,13 @@
     color: white;
 }
 
+#searchForm {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Mengurangi jarak antar elemen */
+    margin-top: 5px;
+}
+
 #searchForm button {
     padding: 3px 5px;
     border: 1px solid transparent; /* Mengatur border kecil dan transparan sebagai default */
@@ -390,3 +397,4 @@
 #searchForm button:hover {
     opacity: 0.8; /* Menambahkan efek hover untuk feedback visual */
 }
+
