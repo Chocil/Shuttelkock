@@ -365,35 +365,28 @@
     color: white;
 }
 
-#searchForm {
-    display: flex;
-    align-items: center;
-    gap: 5px; /* Mengurangi jarak antar elemen */
-    margin-top: 5px;
-}
-
-#searchForm input[type="date"] {
-    padding: 3px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 12px; /* Menyesuaikan ukuran font untuk input */
-    width: 100px; /* Mengatur lebar input tanggal */
-}
-
 #searchForm button {
     padding: 3px 5px;
-    border: none;
-    border-radius: 4px;
+    border: 1px solid transparent; /* Mengatur border kecil dan transparan sebagai default */
+    border-radius: 5px;
     cursor: pointer;
     font-size: 14px; /* Menyesuaikan ukuran font untuk tombol */
+    box-shadow: none; /* Menghapus bayangan jika ada */
+    transition: background-color 0.3s, border-color 0.3s; /* Menambahkan transisi halus */
 }
 
 #searchForm button.btn-search {
     background-color: #007bff;
     color: white;
+    border-color: #007bff; /* Menambahkan warna border sesuai background */
 }
 
 #searchForm button.btn-reset {
     background-color: #dc3545;
     color: white;
+    border-color: #dc3545; /* Menambahkan warna border sesuai background */
+}
+
+#searchForm button:hover {
+    opacity: 0.8; /* Menambahkan efek hover untuk feedback visual */
 }
